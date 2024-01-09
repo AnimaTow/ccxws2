@@ -13,6 +13,7 @@ import { Level2Update } from "../Level2Update";
 import { NotImplementedFn } from "../NotImplementedFn";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
+import { HmacSHA512, enc } from 'crypto-js';
 
 /**
  * Gate.io now supports subscribing to multiple markets from a single socket connection.
@@ -27,8 +28,10 @@ export class GateioClient extends BasicClient {
     public debounceWait: number;
     protected _debounceHandles: Map<any, any>;
     protected _pingInterval: number;
+    private apiKey: string;
+    private apiSecret: string;
 
-    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000 }: ClientOptions = {}) {
+    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000, apiKey, apiSecret }: ClientOptions & { apiKey: string; apiSecret: string }) {
         super(wssPath, "Gateio", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;
@@ -37,6 +40,27 @@ export class GateioClient extends BasicClient {
         this.hasLevel3Updates = false;
         this.debounceWait = 100;
         this._debounceHandles = new Map();
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+    }
+
+    private _sendAuth() {
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const message = `time=${currentTimestamp}`;
+        const signature = this._getSignature(message);
+
+        this._wss.send(
+            JSON.stringify({
+                method: "server.auth",
+                params: [this.apiKey, currentTimestamp, signature],
+                id: 1,
+            })
+        );
+    }
+
+    private _getSignature(message: string): string {
+        const hmac = HmacSHA512(message, this.apiSecret);
+        return hmac.toString(enc.Hex);
     }
 
     protected _debounce(type, fn) {
@@ -45,7 +69,10 @@ export class GateioClient extends BasicClient {
     }
 
     protected _beforeConnect() {
-        this._wss.on("connected", this._startPing.bind(this));
+        this._wss.on("connected", () => {
+            this._startPing();
+            this._sendAuth();
+        });
         this._wss.on("disconnected", this._stopPing.bind(this));
         this._wss.on("closed", this._stopPing.bind(this));
     }
