@@ -570,8 +570,11 @@ export class BitfinexClient extends BasicClient {
         if (isBid) bids.push(point);
         else asks.push(point);
 
-        const isDelete = count === 0;
-        if (isDelete) (point as any).size = (0).toFixed(8); // reset the size to 0, comes in as 1 or -1 to indicate bid/ask
+        let isDelete: boolean = count === 0;
+        if (isDelete) {
+            (point as any).size = (0).toFixed(8);
+        }
+
         const update = new Level2Update({
             exchange: "Bitfinex",
             base: market.base,

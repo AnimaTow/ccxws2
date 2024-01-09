@@ -27,7 +27,7 @@ export class PoloniexClient extends BasicClient {
     protected _subCount: any;
 
     constructor({
-        wssPath = "wss://api2.poloniex.com/",
+        wssPath = "wss://ws.poloniex.com/ws/public",
         autoloadSymbolMaps = true,
         watcherMs,
     }: PoloniexClientOptions = {}) {

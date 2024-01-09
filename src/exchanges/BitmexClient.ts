@@ -32,7 +32,7 @@ export class BitmexClient extends BasicClient {
     Documentation:
     https://www.bitmex.com/app/wsAPI
    */
-    constructor({ wssPath = "wss://www.bitmex.com/realtime", watcherMs }: ClientOptions = {}) {
+    constructor({ wssPath = "wss://ws.bitmex.com/realtime", watcherMs }: ClientOptions = {}) {
         super(wssPath, "BitMEX", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;

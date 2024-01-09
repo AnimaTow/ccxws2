@@ -51,8 +51,8 @@ export class GateioClient extends BasicClient {
     }
 
     protected _startPing() {
-        clearInterval(this._pingInterval);
-        this._pingInterval = setInterval(this._sendPing.bind(this), 30000);
+        clearInterval(this._pingInterval as any);
+        this._pingInterval = setInterval(this._sendPing.bind(this), 30000) as any;
     }
 
     protected _stopPing() {

@@ -20,22 +20,18 @@ import { BiboxClient } from "./exchanges/BiboxClient";
 import { BinanceClient } from "./exchanges/BinanceClient";
 import { BinanceFuturesCoinmClient } from "./exchanges/BinanceFuturesCoinmClient";
 import { BinanceFuturesUsdtmClient } from "./exchanges/BinanceFuturesUsdtmClient";
-import { BinanceJeClient } from "./exchanges/BinanceJeClient";
 import { BinanceUsClient } from "./exchanges/BinanceUsClient";
 import { BitfinexClient } from "./exchanges/BitfinexClient";
 import { BitflyerClient } from "./exchanges/BitflyerClient";
 import { BithumbClient } from "./exchanges/BithumbClient";
 import { BitmexClient } from "./exchanges/BitmexClient";
 import { BitstampClient } from "./exchanges/BitstampClient";
-import { BittrexClient } from "./exchanges/BittrexClient";
 import { CexClient } from "./exchanges/CexClient";
 import { CoinbaseProClient } from "./exchanges/CoinbaseProClient";
 import { CoinexClient } from "./exchanges/CoinexClient";
 import { DeribitClient } from "./exchanges/DeribitClient";
 import { DigifinexClient } from "./exchanges/DigifinexClient";
 import { ErisXClient } from "./exchanges/ErisxClient";
-import { FtxClient } from "./exchanges/FtxClient";
-import { FtxUsClient } from "./exchanges/FtxUsClient";
 import { GateioClient } from "./exchanges/GateioClient";
 import { GeminiClient } from "./exchanges/Geminiclient";
 import { HitBtcClient } from "./exchanges/HitBtcClient";
@@ -80,22 +76,18 @@ export {
     BinanceClient,
     BinanceFuturesCoinmClient,
     BinanceFuturesUsdtmClient,
-    BinanceJeClient,
     BinanceUsClient,
     BitfinexClient,
     BitflyerClient,
     BithumbClient,
     BitmexClient,
     BitstampClient,
-    BittrexClient,
     CexClient,
     CoinbaseProClient,
     CoinexClient,
     DeribitClient,
     DigifinexClient,
     ErisXClient,
-    FtxClient,
-    FtxUsClient,
     GateioClient,
     GeminiClient,
     HitBtcClient,
@@ -124,22 +116,18 @@ export default {
     Binance: BinanceClient,
     BinanceFuturesCoinM: BinanceFuturesCoinmClient,
     BinanceFuturesUsdtM: BinanceFuturesUsdtmClient,
-    BinanceJe: BinanceJeClient,
     BinanceUs: BinanceUsClient,
     Bitfinex: BitfinexClient,
     Bitflyer: BitflyerClient,
     Bithumb: BithumbClient,
     BitMEX: BitmexClient,
     Bitstamp: BitstampClient,
-    Bittrex: BittrexClient,
     Cex: CexClient,
     CoinbasePro: CoinbaseProClient,
     Coinex: CoinexClient,
     Deribit: DeribitClient,
     Digifinex: DigifinexClient,
     ErisX: ErisXClient,
-    Ftx: FtxClient,
-    FtxUs: FtxUsClient,
     Gateio: GateioClient,
     Gemini: GeminiClient,
     HitBTC: HitBtcClient,

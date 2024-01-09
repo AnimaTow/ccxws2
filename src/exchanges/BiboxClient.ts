@@ -259,7 +259,7 @@ export class BiboxBasicClient extends BasicClient {
     Manages connections for a single market. A single
     socket is only allowed to work for 20 markets.
    */
-    constructor({ wssPath = "wss://push.bibox.com", watcherMs = 600 * 1000 } = {}) {
+    constructor({ wssPath = "wss://market-wss.bibox360.com", watcherMs = 600 * 1000 } = {}) {
         super(wssPath, "Bibox");
         this._watcher = new Watcher(this, watcherMs);
         this.hasTickers = true;
@@ -496,7 +496,7 @@ export class BiboxBasicClient extends BasicClient {
     protected _constructTicker(msg: any, market: Market) {
         let { last, buy, sell, vol, percent, low, high, timestamp } = msg.data;
 
-        percent = percent.replace(/%|\+/g, "");
+        percent = percent.replace(/[%+]/g, "");
         const change = (parseFloat(last) * parseFloat(percent)) / 100;
         const open = parseFloat(last) - change;
 

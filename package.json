@@ -1,7 +1,7 @@
 {
   "name": "ccxws2",
-  "version": "0.1.4",
-  "description": "Websocket client for 37 cryptocurrency exchanges",
+  "version": "0.1.5",
+  "description": "Websocket client for cryptocurrency exchanges",
   "keywords": [
     "bitmex",
     "binance",
@@ -11,18 +11,19 @@
     "websocket",
     "realtime"
   ],
-  "author": "Brian Mancini <bmancini@gmail.com>",
+  "author": "AnimaTow <animatow@gmail.com>",
   "license": "MIT",
   "main": "dist/src/index.js",
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "format:fix": "prettier --write  \"src/**\" \"__tests__/**\"",
-    "format": "prettier --check \"src/**\" \"__tests__/**\"",
-    "lint": "eslint src __tests__",
-    "test": "nyc --reporter=lcov --reporter=text --extension=.ts mocha --require ts-node/register --recursive \"__tests__/**/*.spec.ts\""
+    "format:fix": "prettier --write  \"src/**\"",
+    "format": "prettier --check \"src/**\""
   },
-  "repository": "AnimaTow/ccxws2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnimaTow/ccxws2.git"
+  },
   "dependencies": {
     "@sinonjs/fake-timers": "^11.2.2",
     "crc": "^3.8.0",
@@ -46,11 +47,15 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "mocha": "^9.2.2",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.3.0",
     "sinon": "^17.0.1",
     "ts-node": "^10.0.0",
     "typescript": "^4.2.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/AnimaTow/ccxws2/issues"
+  },
+  "homepage": "https://github.com/AnimaTow/ccxws2#readme"
 }
