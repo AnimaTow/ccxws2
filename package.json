@@ -16,7 +16,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "format:fix": "prettier --write  \"src/**\"",
     "format": "prettier --check \"src/**\""
   },

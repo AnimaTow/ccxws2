@@ -70,8 +70,6 @@ binance.subscribeLevel2Snapshots(market);
 | Deribit                | 2   | DeribitClient             | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
 | Digifinex              | 1   | DigifinexClient           | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
 | ErisX                  | 3.4 | ErisXClient               | -        | &#10003; | -        | -              | -             | -              | &#10003;\*    |
-| FTX                    | 1   | FtxClient                 | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
-| FTX US                 | 1   | FtxUsClient               | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
 | Gate.io                | 3   | GateioClient              | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
 | Gemini                 | 1   | GeminiClient              | -        | &#10003; | -        | -              | &#10003;\*    | -              | -             |
 | HitBTC                 | 2   | HitBtcClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
