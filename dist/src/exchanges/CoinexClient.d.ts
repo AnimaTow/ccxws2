@@ -7,7 +7,10 @@ import { Level2Snapshot } from "../Level2Snapshots";
 import { Level2Update } from "../Level2Update";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
-export type CoinexClientOptions = {};
+export type CoinexClientOptions = {
+    apiKey?: string;
+    apiSecret?: string;
+};
 export declare class CoinexClient extends BasicMultiClient {
     options: CoinexClientOptions;
     candlePeriod: CandlePeriod;
@@ -17,14 +20,20 @@ export declare class CoinexClient extends BasicMultiClient {
 export declare class CoinexSingleClient extends BasicClient {
     retryErrorTimeout: number;
     parent: CoinexClient;
+    apiKey: string | undefined;
+    apiSecret: string | undefined;
     protected _id: number;
     protected _idSubMap: Map<any, any>;
-    protected _pingInterval: NodeJS.Timeout;
-    constructor({ wssPath, watcherMs, parent }: {
+    protected _pingInterval: NodeJS.Timeout | null;
+    constructor({ wssPath, watcherMs, parent, apiKey, apiSecret }: {
         wssPath?: string;
         watcherMs?: number;
         parent: any;
+        apiKey: any;
+        apiSecret: any;
     });
+    private _generateSignature;
+    private _authenticate;
     get candlePeriod(): CandlePeriod;
     protected _beforeConnect(): void;
     protected _startPing(): void;

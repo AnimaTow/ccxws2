@@ -17,7 +17,14 @@ export declare class GateioClient extends BasicClient {
     debounceWait: number;
     protected _debounceHandles: Map<any, any>;
     protected _pingInterval: number;
-    constructor({ wssPath, watcherMs }?: ClientOptions);
+    private apiKey;
+    private apiSecret;
+    constructor({ wssPath, watcherMs, apiKey, apiSecret }: ClientOptions & {
+        apiKey: string;
+        apiSecret: string;
+    });
+    private _sendAuth;
+    private _getSignature;
     protected _debounce(type: any, fn: any): void;
     protected _beforeConnect(): void;
     protected _startPing(): void;

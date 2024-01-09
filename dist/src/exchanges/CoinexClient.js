@@ -29,13 +29,15 @@ class CoinexClient extends BasicMultiClient_1.BasicMultiClient {
         this.candlePeriod = CandlePeriod_1.CandlePeriod._1m;
     }
     _createBasicClient() {
-        return new CoinexSingleClient({ ...this.options, parent: this });
+        const { apiKey, apiSecret } = this.options;
+        return new CoinexSingleClient({ ...this.options, apiKey, apiSecret, parent: this });
     }
 }
 exports.CoinexClient = CoinexClient;
 class CoinexSingleClient extends BasicClient_1.BasicClient {
-    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent }) {
+    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent, apiKey, apiSecret }) {
         super(wssPath, "Coinex", undefined, watcherMs);
+        this._pingInterval = null;
         this._sendSubCandles = NotImplementedFn_1.NotImplementedFn;
         this._sendUnsubCandles = NotImplementedFn_1.NotImplementedFn;
         this._sendSubLevel2Snapshots = NotImplementedFn_1.NotImplementedFn;
@@ -52,21 +54,54 @@ class CoinexSingleClient extends BasicClient_1.BasicClient {
         this._id = 0;
         this._idSubMap = new Map();
         this.parent = parent;
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+    }
+  _generateSignature(accessId, secretKey, tonce) {
+    if (!accessId || !secretKey) {
+      throw new Error("API key and API secret are required for authentication.");
+    }
+
+    const signData = `access_id=${accessId}&tonce=${tonce}&secret_key=${secretKey}`;
+    return MD5(signData).toString().toUpperCase();
+  }
+
+
+    _authenticate() {
+        const { apiKey, apiSecret } = this;
+        if (!apiKey || !apiSecret) {
+            throw new Error("API key and API secret are required for authentication.");
+        }
+        const tonce = Date.now();
+        const signature = this._generateSignature(apiKey, apiSecret, tonce);
+        this._wss.send(JSON.stringify({
+            method: "server.sign",
+            params: [apiKey, signature, tonce],
+            id: ++this._id,
+        }));
     }
     get candlePeriod() {
         return this.parent.candlePeriod;
     }
     _beforeConnect() {
-        this._wss.on("connected", this._startPing.bind(this));
+        this._wss.on("connected", () => {
+            this._startPing();
+            this._authenticate();
+        });
         this._wss.on("disconnected", this._stopPing.bind(this));
         this._wss.on("closed", this._stopPing.bind(this));
     }
     _startPing() {
-        clearInterval(this._pingInterval);
+        if (this._pingInterval) {
+            clearInterval(this._pingInterval);
+        }
         this._pingInterval = setInterval(this._sendPing.bind(this), 30000);
     }
     _stopPing() {
-        clearInterval(this._pingInterval);
+        if (this._pingInterval) {
+            clearInterval(this._pingInterval);
+            this._pingInterval = null;
+        }
     }
     _sendPing() {
         if (this._wss) {
@@ -197,7 +232,6 @@ class CoinexSingleClient extends BasicClient_1.BasicClient {
                 const l2update = this._constructLevel2Update(params[1], market);
                 this.emit("l2update", l2update, market);
             }
-            return;
         }
     }
     _constructTicker(rawTick, market) {

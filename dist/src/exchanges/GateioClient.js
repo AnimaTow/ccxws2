@@ -18,6 +18,7 @@ const Level2Update_1 = require("../Level2Update");
 const NotImplementedFn_1 = require("../NotImplementedFn");
 const Ticker_1 = require("../Ticker");
 const Trade_1 = require("../Trade");
+const crypto_js_1 = require("crypto-js");
 /**
  * Gate.io now supports subscribing to multiple markets from a single socket connection.
  * These requests will be debounced so that multiple subscriptions will trigger a
@@ -28,7 +29,7 @@ const Trade_1 = require("../Trade");
  * can handle either.
  */
 class GateioClient extends BasicClient_1.BasicClient {
-    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000 } = {}) {
+    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000, apiKey, apiSecret }) {
         super(wssPath, "Gateio", undefined, watcherMs);
         this._sendSubCandles = NotImplementedFn_1.NotImplementedFn;
         this._sendUnsubCandles = NotImplementedFn_1.NotImplementedFn;
@@ -45,13 +46,32 @@ class GateioClient extends BasicClient_1.BasicClient {
         this.hasLevel3Updates = false;
         this.debounceWait = 100;
         this._debounceHandles = new Map();
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+    }
+    _sendAuth() {
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const message = `time=${currentTimestamp}`;
+        const signature = this._getSignature(message);
+        this._wss.send(JSON.stringify({
+            method: "server.auth",
+            params: [this.apiKey, currentTimestamp, signature],
+            id: 1,
+        }));
+    }
+    _getSignature(message) {
+      const hmac = crypto_js_1.HmacSHA512(message, this.apiSecret);
+      return hmac.toString(crypto_js_1.enc.Hex);
     }
     _debounce(type, fn) {
         clearTimeout(this._debounceHandles.get(type));
         this._debounceHandles.set(type, setTimeout(fn, this.debounceWait));
     }
     _beforeConnect() {
-        this._wss.on("connected", this._startPing.bind(this));
+        this._wss.on("connected", () => {
+            this._startPing();
+            this._sendAuth();
+        });
         this._wss.on("disconnected", this._stopPing.bind(this));
         this._wss.on("closed", this._stopPing.bind(this));
     }
@@ -157,7 +177,6 @@ class GateioClient extends BasicClient_1.BasicClient {
                 const l2update = this._constructLevel2Update(params[1], market);
                 this.emit("l2update", l2update, market);
             }
-            return;
         }
     }
     _constructTicker(rawTick, market) {
