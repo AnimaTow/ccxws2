@@ -7,7 +7,6 @@
 import moment = require("moment");
 import { BasicClient } from "../BasicClient";
 import { BasicMultiClient } from "../BasicMultiClient";
-import { Candle } from "../Candle";
 import { CandlePeriod } from "../CandlePeriod";
 import { IClient } from "../IClient";
 import { Level2Point } from "../Level2Point";
@@ -37,19 +36,22 @@ export class CoinexClient extends BasicMultiClient {
     }
 
     protected _createBasicClient(): IClient {
-        return new CoinexSingleClient({ ...this.options, parent: this });
+        const { apiKey, apiSecret } = this.options;
+        return new CoinexSingleClient({ ...this.options, apiKey, apiSecret, parent: this });
     }
 }
 
 export class CoinexSingleClient extends BasicClient {
     public retryErrorTimeout: number;
     public parent: CoinexClient;
+    public apiKey: string | undefined; // Declare apiKey as a class property
+    public apiSecret: string | undefined; // Declare apiSecret as a class property
 
     protected _id: number;
     protected _idSubMap: Map<any, any>;
-    protected _pingInterval: NodeJS.Timeout;
+    protected _pingInterval: NodeJS.Timeout | null = null;
 
-    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent }) {
+    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent, apiKey, apiSecret }) {
         super(wssPath, "Coinex", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;
@@ -59,6 +61,35 @@ export class CoinexSingleClient extends BasicClient {
         this._id = 0;
         this._idSubMap = new Map();
         this.parent = parent;
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+    }
+
+    private _generateSignature(accessId: string, secretKey: string, tonce: number): string {
+        if (!accessId || !secretKey) {
+            throw new Error("API key and API secret are required for authentication.");
+        }
+
+        const signData = `access_id=${accessId}&tonce=${tonce}&secret_key=${secretKey}`;
+        return require("crypto").createHash("md5").update(signData).digest("hex").toUpperCase();
+    }
+
+    private _authenticate(): void {
+        const { apiKey, apiSecret } = this;
+        if (!apiKey || !apiSecret) {
+            throw new Error("API key and API secret are required for authentication.");
+        }
+
+        const tonce = Date.now();
+        const signature = this._generateSignature(apiKey, apiSecret, tonce);
+
+        this._wss.send(
+            JSON.stringify({
+                method: "server.sign",
+                params: [apiKey, signature, tonce],
+                id: ++this._id,
+            }),
+        );
     }
 
     public get candlePeriod() {
@@ -66,18 +97,29 @@ export class CoinexSingleClient extends BasicClient {
     }
 
     protected _beforeConnect() {
-        this._wss.on("connected", this._startPing.bind(this));
+        this._wss.on("connected", () => {
+            this._startPing();
+            this._authenticate();
+        });
         this._wss.on("disconnected", this._stopPing.bind(this));
         this._wss.on("closed", this._stopPing.bind(this));
     }
 
+
+
+
     protected _startPing() {
-        clearInterval(this._pingInterval);
-        this._pingInterval = setInterval(this._sendPing.bind(this), 30000);
+        if (this._pingInterval) {
+            clearInterval(this._pingInterval as any);
+        }
+        this._pingInterval = setInterval(this._sendPing.bind(this), 30000) as any;
     }
 
     protected _stopPing() {
-        clearInterval(this._pingInterval);
+        if (this._pingInterval) {
+            clearInterval(this._pingInterval as any);
+            this._pingInterval = null;
+        }
     }
 
     protected _sendPing() {
