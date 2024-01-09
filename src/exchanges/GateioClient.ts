@@ -26,9 +26,9 @@ import { Trade } from "../Trade";
 export class GateioClient extends BasicClient {
     public debounceWait: number;
     protected _debounceHandles: Map<any, any>;
-    protected _pingInterval: NodeJS.Timeout;
+    protected _pingInterval: number;
 
-    constructor({ wssPath = "wss://ws.gate.io/v3", watcherMs = 900 * 1000 }: ClientOptions = {}) {
+    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000 }: ClientOptions = {}) {
         super(wssPath, "Gateio", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;
