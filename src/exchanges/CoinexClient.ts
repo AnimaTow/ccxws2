@@ -16,7 +16,9 @@ import { NotImplementedFn } from "../NotImplementedFn";
 import { SubscriptionType } from "../SubscriptionType";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
-import { MD5 } from 'crypto-js';
+import * as crypto from 'crypto-js';
+
+
 
 export type CoinexClientOptions = {
     apiKey?: string;
@@ -73,7 +75,7 @@ export class CoinexSingleClient extends BasicClient {
         }
 
         const signData = `access_id=${accessId}&tonce=${tonce}&secret_key=${secretKey}`;
-        return MD5(signData).toString().toUpperCase();
+        return crypto.MD5(signData).toString().toUpperCase();
     }
 
     private _authenticate(): void {
