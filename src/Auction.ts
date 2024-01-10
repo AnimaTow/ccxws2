@@ -1,34 +1,34 @@
 export class Auction {
-    public exchange: string;
-    public quote: string;
-    public base: string;
-    public tradeId: string;
-    public unix: number;
-    public price: string;
-    public high: string;
-    public low: string;
-    public amount: string;
+    public readonly exchange: string;
+    public readonly quote: string;
+    public readonly base: string;
+    public readonly tradeId: string;
+    public readonly unixTimestamp: number;
+    public readonly price: string;
+    public readonly high: string;
+    public readonly low: string;
+    public readonly amount: string;
 
     constructor({
         exchange,
         base,
         quote,
         tradeId,
-        unix,
+        unixTimestamp,
         price,
         amount,
         high,
         low,
     }: Partial<Auction>) {
-        this.exchange = exchange;
-        this.quote = quote;
-        this.base = base;
-        this.tradeId = tradeId;
-        this.unix = unix;
-        this.price = price;
-        this.high = high;
-        this.low = low;
-        this.amount = amount;
+        this.exchange = exchange || "";
+        this.quote = quote || "";
+        this.base = base || "";
+        this.tradeId = tradeId || "";
+        this.unixTimestamp = unixTimestamp || 0;
+        this.price = price || "";
+        this.high = high || "";
+        this.low = low || "";
+        this.amount = amount || "";
     }
 
     public get marketId() {

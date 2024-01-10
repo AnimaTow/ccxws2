@@ -29,7 +29,7 @@ const crypto_js_1 = require("crypto-js");
  * can handle either.
  */
 class GateioClient extends BasicClient_1.BasicClient {
-    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000, apiKey, apiSecret }) {
+    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000, apiKey, apiSecret, }) {
         super(wssPath, "Gateio", undefined, watcherMs);
         this._sendSubCandles = NotImplementedFn_1.NotImplementedFn;
         this._sendUnsubCandles = NotImplementedFn_1.NotImplementedFn;

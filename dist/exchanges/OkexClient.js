@@ -81,7 +81,7 @@ class OkexClient extends BasicClient_1.BasicClient {
      */
     _marketArg(method, market) {
         const type = (market.type || "SPOT").toUpperCase();
-        return { "channel": method, "instId": market.id, "instType": type };
+        return { channel: method, instId: market.id, instType: type };
     }
     /**
      * Gets the exchanges interpretation of the candle period
@@ -185,13 +185,13 @@ class OkexClient extends BasicClient_1.BasicClient {
         // process JSON message
         try {
             const msg = JSON.parse(json.toString());
-            this._processsMessage(msg);
+            this._processMessage(msg);
         }
         catch (ex) {
             this.emit("error", ex);
         }
     }
-    _processsMessage(msg) {
+    _processMessage(msg) {
         // clear semaphore on subscription event reply
         if (msg.event === "subscribe") {
             return;
@@ -480,10 +480,13 @@ class OkexClient extends BasicClient_1.BasicClient {
      }
      */
     _constructTicker(data, market) {
-        const { last, bidPx, bidSz, askPx, askSz, open24h, high24h, low24h, vol24h, ts, } = data;
+        const { last, bidPx, bidSz, askPx, askSz, open24h, high24h, low24h, vol24h, ts } = data;
         const change = parseFloat(last) - parseFloat(open24h);
         const changePercent = change / parseFloat(open24h);
-        const timestamp = moment_1.default.unix(Math.ceil(ts / 1000)).utc().valueOf();
+        const timestamp = moment_1.default
+            .unix(Math.ceil(ts / 1000))
+            .utc()
+            .valueOf();
         return new Ticker_1.Ticker({
             exchange: this.name,
             base: market.base,
@@ -515,7 +518,10 @@ class OkexClient extends BasicClient_1.BasicClient {
      */
     _constructTrade(datum, market) {
         const { px, side, sz, ts, tradeId } = datum;
-        const unix = moment_1.default.unix(Math.ceil(ts / 1000)).utc().valueOf();
+        const unix = moment_1.default
+            .unix(Math.ceil(ts / 1000))
+            .utc()
+            .valueOf();
         return new Trade_1.Trade({
             exchange: this.name,
             base: market.base,
@@ -541,8 +547,11 @@ class OkexClient extends BasicClient_1.BasicClient {
      * @param {*} datum
      */
     _constructCandle(datum) {
-        const [datetime, open, high, low, close, volume,] = datum;
-        const ts = moment_1.default.unix(Math.ceil(datetime / 1000)).utc().valueOf();
+        const [datetime, open, high, low, close, volume] = datum;
+        const ts = moment_1.default
+            .unix(Math.ceil(datetime / 1000))
+            .utc()
+            .valueOf();
         return new Candle_1.Candle(ts, open, high, low, close, volume);
     }
     /**
@@ -599,7 +608,10 @@ class OkexClient extends BasicClient_1.BasicClient {
     _constructLevel2Snapshot(datum, market) {
         const asks = datum.asks.map(p => new Level2Point_1.Level2Point(p[0], p[1], p[3]));
         const bids = datum.bids.map(p => new Level2Point_1.Level2Point(p[0], p[1], p[3]));
-        const ts = moment_1.default.unix(Math.ceil(datum.ts / 1000)).utc().valueOf();
+        const ts = moment_1.default
+            .unix(Math.ceil(datum.ts / 1000))
+            .utc()
+            .valueOf();
         const checksum = datum.checksum;
         return new Level2Snapshots_1.Level2Snapshot({
             exchange: this.name,
@@ -643,7 +655,10 @@ class OkexClient extends BasicClient_1.BasicClient {
     _constructLevel2Update(datum, market) {
         const asks = datum.asks.map(p => new Level2Point_1.Level2Point(p[0], p[1], p[3]));
         const bids = datum.bids.map(p => new Level2Point_1.Level2Point(p[0], p[1], p[3]));
-        const ts = moment_1.default.unix(Math.ceil(datum.ts / 1000)).utc().valueOf();
+        const ts = moment_1.default
+            .unix(Math.ceil(datum.ts / 1000))
+            .utc()
+            .valueOf();
         const checksum = datum.checksum;
         return new Level2Update_1.Level2Update({
             exchange: this.name,

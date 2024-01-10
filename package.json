@@ -62,5 +62,9 @@
   "bugs": {
     "url": "https://github.com/AnimaTow/ccxws2/issues"
   },
-  "homepage": "https://github.com/AnimaTow/ccxws2#readme"
+  "homepage": "https://github.com/AnimaTow/ccxws2#readme",
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^6.0.3"
+  }
 }

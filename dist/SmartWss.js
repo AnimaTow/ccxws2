@@ -1,7 +1,4 @@
 "use strict";
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,6 +13,7 @@ class SmartWss extends events_1.EventEmitter {
         this.wssPath = wssPath;
         this._retryTimeoutMs = 15000;
         this._connected = false;
+        this._wss = null;
     }
     /**
      * Gets if the socket is currently connected
@@ -37,9 +35,10 @@ class SmartWss extends events_1.EventEmitter {
         if (this._wss) {
             this._wss.removeAllListeners();
             this._wss.on("close", () => this.emit("closed"));
-            this._wss.on("error", err => {
-                if (err.message !== "WebSocket was closed before the connection was established")
+            this._wss.on("error", (err) => {
+                if (err.message !== "WebSocket was closed before the connection was established") {
                     return;
+                }
                 this.emit("error", err);
             });
             this._wss.close();
@@ -51,7 +50,7 @@ class SmartWss extends events_1.EventEmitter {
      * when the socket is connected.
      */
     send(data) {
-        if (this._connected) {
+        if (this._connected && this._wss) {
             try {
                 this._wss.send(data);
             }
@@ -79,7 +78,7 @@ class SmartWss extends events_1.EventEmitter {
                 resolve();
             });
             this._wss.on("close", () => this._closeCallback());
-            this._wss.on("error", err => this.emit("error", err));
+            this._wss.on("error", (err) => this.emit("error", err));
             this._wss.on("message", msg => this.emit("message", msg));
         });
     }
@@ -97,7 +96,6 @@ class SmartWss extends events_1.EventEmitter {
      * and will loop on hard failures
      */
     async _retryConnect() {
-        // eslint-disable-next-line no-constant-condition
         while (true) {
             try {
                 await (0, Util_1.wait)(this._retryTimeoutMs);

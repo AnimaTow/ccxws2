@@ -13,7 +13,7 @@ import { Level2Update } from "../Level2Update";
 import { NotImplementedFn } from "../NotImplementedFn";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
-import { HmacSHA512, enc } from 'crypto-js';
+import { HmacSHA512, enc } from "crypto-js";
 
 /**
  * Gate.io now supports subscribing to multiple markets from a single socket connection.
@@ -31,7 +31,12 @@ export class GateioClient extends BasicClient {
     private apiKey: string;
     private apiSecret: string;
 
-    constructor({ wssPath = "wss://ws.gate.io/v4", watcherMs = 900 * 1000, apiKey, apiSecret }: ClientOptions & { apiKey: string; apiSecret: string }) {
+    constructor({
+        wssPath = "wss://ws.gate.io/v4",
+        watcherMs = 900 * 1000,
+        apiKey,
+        apiSecret,
+    }: ClientOptions & { apiKey: string; apiSecret: string }) {
         super(wssPath, "Gateio", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;
@@ -54,7 +59,7 @@ export class GateioClient extends BasicClient {
                 method: "server.auth",
                 params: [this.apiKey, currentTimestamp, signature],
                 id: 1,
-            })
+            }),
         );
     }
 

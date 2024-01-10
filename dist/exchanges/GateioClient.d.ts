@@ -19,7 +19,7 @@ export declare class GateioClient extends BasicClient {
     protected _pingInterval: number;
     private apiKey;
     private apiSecret;
-    constructor({ wssPath, watcherMs, apiKey, apiSecret }: ClientOptions & {
+    constructor({ wssPath, watcherMs, apiKey, apiSecret, }: ClientOptions & {
         apiKey: string;
         apiSecret: string;
     });

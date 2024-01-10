@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { EventEmitter } from "events";
 import WebSocket from "ws";
 import { wait } from "./Util";
@@ -9,12 +5,13 @@ import { wait } from "./Util";
 export class SmartWss extends EventEmitter {
     private _retryTimeoutMs: number;
     private _connected: boolean;
-    private _wss: any;
+    private _wss: WebSocket | null;
 
     constructor(readonly wssPath: string) {
         super();
         this._retryTimeoutMs = 15000;
         this._connected = false;
+        this._wss = null;
     }
 
     /**
@@ -39,9 +36,10 @@ export class SmartWss extends EventEmitter {
         if (this._wss) {
             this._wss.removeAllListeners();
             this._wss.on("close", () => this.emit("closed"));
-            this._wss.on("error", err => {
-                if (err.message !== "WebSocket was closed before the connection was established")
+            this._wss.on("error", (err: Error) => {
+                if (err.message !== "WebSocket was closed before the connection was established") {
                     return;
+                }
                 this.emit("error", err);
             });
             this._wss.close();
@@ -53,8 +51,8 @@ export class SmartWss extends EventEmitter {
      * Otherwise the consumer needs to retry to send the information
      * when the socket is connected.
      */
-    public send(data: string) {
-        if (this._connected) {
+    public send(data: string): void {
+        if (this._connected && this._wss) {
             try {
                 this._wss.send(data);
             } catch (e) {
@@ -69,7 +67,7 @@ export class SmartWss extends EventEmitter {
      * Attempts a connection and will either fail or timeout otherwise.
      */
     private _attemptConnect(): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             const wssPath = this.wssPath;
             this.emit("connecting");
             this._wss = new WebSocket(wssPath, {
@@ -83,7 +81,7 @@ export class SmartWss extends EventEmitter {
                 resolve();
             });
             this._wss.on("close", () => this._closeCallback());
-            this._wss.on("error", err => this.emit("error", err));
+            this._wss.on("error", (err: Error) => this.emit("error", err));
             this._wss.on("message", msg => this.emit("message", msg));
         });
     }
@@ -103,7 +101,6 @@ export class SmartWss extends EventEmitter {
      * and will loop on hard failures
      */
     private async _retryConnect(): Promise<void> {
-        // eslint-disable-next-line no-constant-condition
         while (true) {
             try {
                 await wait(this._retryTimeoutMs);

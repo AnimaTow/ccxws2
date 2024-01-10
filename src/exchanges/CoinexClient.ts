@@ -16,9 +16,7 @@ import { NotImplementedFn } from "../NotImplementedFn";
 import { SubscriptionType } from "../SubscriptionType";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
-import * as crypto from 'crypto-js';
-
-
+import * as crypto from "crypto-js";
 
 export type CoinexClientOptions = {
     apiKey?: string;
@@ -55,7 +53,13 @@ export class CoinexSingleClient extends BasicClient {
     protected _idSubMap: Map<any, any>;
     protected _pingInterval: NodeJS.Timeout | null = null;
 
-    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent, apiKey, apiSecret }) {
+    constructor({
+        wssPath = "wss://socket.coinex.com/",
+        watcherMs = 900 * 1000,
+        parent,
+        apiKey,
+        apiSecret,
+    }) {
         super(wssPath, "Coinex", undefined, watcherMs);
         this.hasTickers = true;
         this.hasTrades = true;
@@ -108,9 +112,6 @@ export class CoinexSingleClient extends BasicClient {
         this._wss.on("disconnected", this._stopPing.bind(this));
         this._wss.on("closed", this._stopPing.bind(this));
     }
-
-
-
 
     protected _startPing() {
         if (this._pingInterval) {

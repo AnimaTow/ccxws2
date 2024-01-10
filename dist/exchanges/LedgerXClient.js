@@ -151,7 +151,7 @@ class LedgerXClient extends BasicClient_1.BasicClient {
     async _requestLevel3Snapshot(market) {
         try {
             const uri = `https://trade.ledgerx.com/api/book-states/${market.id}?token=${this.apiKey}`;
-            const { data } = await https.get(uri);
+            const { data } = (await https.get(uri));
             const sequenceId = data.clock;
             const asks = [];
             const bids = [];

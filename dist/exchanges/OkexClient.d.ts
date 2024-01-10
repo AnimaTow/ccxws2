@@ -71,7 +71,7 @@ export declare class OkexClient extends BasicClient {
     protected _sendSubLevel3Updates: (...args: any[]) => any;
     protected _sendUnsubLevel3Updates: (...args: any[]) => any;
     protected _onMessage(json: string): void;
-    protected _processsMessage(msg: any): void;
+    protected _processMessage(msg: any): void;
     /**
      * Process ticker messages in the format
      {

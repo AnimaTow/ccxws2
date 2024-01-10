@@ -25,7 +25,7 @@ export declare class CoinexSingleClient extends BasicClient {
     protected _id: number;
     protected _idSubMap: Map<any, any>;
     protected _pingInterval: NodeJS.Timeout | null;
-    constructor({ wssPath, watcherMs, parent, apiKey, apiSecret }: {
+    constructor({ wssPath, watcherMs, parent, apiKey, apiSecret, }: {
         wssPath?: string;
         watcherMs?: number;
         parent: any;

@@ -59,7 +59,7 @@ class CoinexClient extends BasicMultiClient_1.BasicMultiClient {
 }
 exports.CoinexClient = CoinexClient;
 class CoinexSingleClient extends BasicClient_1.BasicClient {
-    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent, apiKey, apiSecret }) {
+    constructor({ wssPath = "wss://socket.coinex.com/", watcherMs = 900 * 1000, parent, apiKey, apiSecret, }) {
         super(wssPath, "Coinex", undefined, watcherMs);
         this._pingInterval = null;
         this._sendSubCandles = NotImplementedFn_1.NotImplementedFn;
