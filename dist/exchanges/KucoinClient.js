@@ -120,12 +120,15 @@ class KucoinClient extends BasicClient_1.BasicClient {
     }
     async _connectAsync() {
         let wssPath;
-        // Retry http request until successful
-        while (!wssPath) {
+        // Retry http request until successful or reaching max retries
+        const maxRetries = 3;
+        let retries = 0;
+        const makeHttpRequest = async () => {
             try {
-                const raw = await https.post("https://openapi-v2.kucoin.com/api/v1/bullet-public"); // prettier-ignore
-                if (!raw.data || !raw.data.token)
+                const raw = await https.post("https://openapi-v2.kucoin.com/api/v1/bullet-public");
+                if (!raw.data || !raw.data.token) {
                     throw new Error("Unexpected token response");
+                }
                 const { token, instanceServers } = raw.data;
                 const { endpoint, pingInterval } = instanceServers[0];
                 this._connectId = crypto_1.default.randomBytes(24).toString("hex");
@@ -136,26 +139,41 @@ class KucoinClient extends BasicClient_1.BasicClient {
                 this._onError(ex);
                 await (0, Util_1.wait)(this.connectInitTimeoutMs);
             }
+        };
+        while (!wssPath && retries < maxRetries) {
+            await makeHttpRequest();
+            retries++;
+        }
+        if (!wssPath) {
+            throw new Error("Failed to establish WebSocket connection after multiple attempts.");
         }
         // Construct a socket and bind all events
         this._wss = this._wssFactory(wssPath);
-        this._wss.on("error", this._onError.bind(this));
-        this._wss.on("connecting", this._onConnecting.bind(this));
-        this._wss.on("connected", this._onConnected.bind(this));
-        this._wss.on("disconnected", this._onDisconnected.bind(this));
-        this._wss.on("closing", this._onClosing.bind(this));
-        this._wss.on("closed", this._onClosed.bind(this));
-        this._wss.on("message", msg => {
-            try {
-                this._onMessage(msg);
-            }
-            catch (ex) {
-                this._onError(ex);
-            }
-        });
+        this._bindWebSocketEvents();
         if (this._beforeConnect)
             this._beforeConnect();
         this._wss.connect();
+    }
+    _bindWebSocketEvents() {
+        const events = {
+            error: this._onError.bind(this),
+            connecting: this._onConnecting.bind(this),
+            connected: this._onConnected.bind(this),
+            disconnected: this._onDisconnected.bind(this),
+            closing: this._onClosing.bind(this),
+            closed: this._onClosed.bind(this),
+            message: (msg) => {
+                try {
+                    this._onMessage(msg);
+                }
+                catch (ex) {
+                    this._onError(ex);
+                }
+            },
+        };
+        Object.entries(events).forEach(([eventName, eventHandler]) => {
+            this._wss.on(eventName, eventHandler);
+        });
     }
     __sendMessage(msg) {
         this._wss.send(msg);

@@ -39,6 +39,7 @@ export declare class KucoinClient extends BasicClient {
      */
     protected _connect(): void;
     protected _connectAsync(): Promise<void>;
+    private _bindWebSocketEvents;
     protected __sendMessage(msg: any): void;
     protected _sendSubTicker(remote_id: string): void;
     protected _sendUnsubTicker(remote_id: string): void;
