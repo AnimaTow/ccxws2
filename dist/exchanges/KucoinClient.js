@@ -251,7 +251,11 @@ class KucoinClient extends BasicClient_1.BasicClient {
         }));
     }
     _onMessage(raw) {
-        const replaced = raw.replace(/:(\d+\.{0,1}\d+)(,|\})/g, ':"$1"$2');
+        if (typeof raw !== 'string') {
+            this._onError(new Error('Received message is not a string.'));
+            return;
+        }
+        const replaced = raw.replace(/:(\d+\.?\d+)(,|})/g, ':"$1"$2');
         try {
             const msgs = JSON.parse(replaced);
             if (Array.isArray(msgs)) {
