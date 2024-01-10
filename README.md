@@ -1,11 +1,13 @@
 # CryptoCurrency eXchange WebSockets
 
-[![CI](https://github.com/AnimaTow/ccxws2/workflows/Node.js%20CI/badge.svg)](https://github.com/altangent/ccxws/actions?query=workflow%3A%22Node.js+CI%22)
-[![Coverage](https://coveralls.io/repos/github/AnimaTow/ccxws2/badge.svg?branch=master)](https://coveralls.io/github/altangent/ccxws?branch=master)
+[![CI](https://github.com/AnimaTow/ccxws2/workflows/Node.js%20CI/badge.svg)](https://github.com/Animatow/ccxws2/actions?query=workflow%3A%22Node.js+CI%22)
+[![Coverage](https://coveralls.io/repos/github/AnimaTow/ccxws2/badge.svg?branch=master)](https://coveralls.io/github/AnimaTow/ccxws2?branch=master)
+
+ccxws2 is a Fork from ccxws
 
 A JavaScript library for connecting to realtime public APIs on all cryptocurrency exchanges.
 
-CCXWS2 provides a standardized eventing interface for connection to public APIs. Currently CCXWS support ticker, trade and orderbook events.
+CCXWS2 provides a standardized eventing interface for connection to public APIs. Currently CCXWS2 support ticker, trade and orderbook events.
 
 The CCXWS2 socket client performs automatic reconnection when there are disconnections. It also has silent reconnection logic to assist when no data has been seen by the client but the socket remains open.
 
@@ -51,41 +53,40 @@ binance.subscribeLevel2Snapshots(market);
 
 ## Exchanges
 
-| Exchange               | API | Class                     | Ticker   | Trades   | Candles  | OB-L2 Snapshot | OB-L2 Updates | OB-L3 Snapshot | OB-L3 Updates |
-| ---------------------- | --- | ------------------------- | -------- | -------- | -------- | -------------- | ------------- | -------------- | ------------- |
-| Bibox                  | 1   | BiboxClient               | &#10003; | &#10003; | &#10003; | &#10003;       |               | -              | -             |
-| Binance                | 1   | BinanceClient             | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |
-| Binance Futures Coin-M | 1   | BinanceFuturesCoinmClient | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |
-| Binance Futures USDT-M | 1   | BinanceFuturesUsdtmClient | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |
-| Binance US             | 1   | BinanceUsClient           | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |
-| Bitfinex               | 2   | BitfinexClient            | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | &#10003;\*    |
-| bitFlyer               | 1   | BitflyerClient            | &#10003; | &#10003; | -        | -              | &#10003;\*\*  | -              | -             |
-| Bithumb                | 1   | BithumbClient             | &#10003; | &#10003; | -        | -              | &#10003;\*\*  | -              | -             |
-| BitMEX                 | 1   | BitmexClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| Bitstamp               | 2   | BitstampClient            | -        | &#10003; | -        | &#10003;       | &#10003;\*\*  | -              | -             |
-| Bittrex                | 3   | BittrexClient             | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| Cex.io                 | 1   | CexClient                 | &#10003; | &#10003; | &#10003; | &#10003;       |               | -              | -             |
-| Coinbase Pro           | 1   | CoinbaseProClient         | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | &#10003;      |
-| Coinex                 | 1   | CoinexClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| Deribit                | 2   | DeribitClient             | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| Digifinex              | 1   | DigifinexClient           | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
-| ErisX                  | 3.4 | ErisXClient               | -        | &#10003; | -        | -              | -             | -              | &#10003;\*    |
-| Gate.io                | 3   | GateioClient              | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
-| Gemini                 | 1   | GeminiClient              | -        | &#10003; | -        | -              | &#10003;\*    | -              | -             |
-| HitBTC                 | 2   | HitBtcClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| Huobi Global           | 1   | HuobiClient               | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |
-| Huobi Global Futures   | 1   | HuobiFuturesClient        | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |
-| Huobi Global Swaps     | 1   | HuobiSwapsClient          | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |
-| Huobi Japan            | 1   | HuobiJapanClient          | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |
-| Huobi Korea            | 1   | HuobiKoreaClient          | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |
-| KuCoin                 | 2   | KucoinClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*\*  | -              | &#10003;\*    |
-| Kraken                 | 0   | KrakenClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |
-| LedgerX                | 1   | LedgerXClient             | -        | &#10003; | -        | -              | -             | -              | &#10003;\*    |
-| Liquid                 | 2   | LiquidClient              | &#10003; | &#10003; | -        | -              | &#10003;      | -              | -             |
-| OKEx                   | 3   | OkexClient                | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |
-| Poloniex               | 2   | PoloniexClient            | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |
-| Upbit                  | 1   | UpbitClient               | &#10003; | &#10003; | -        | &#10003;       | -             | -              | -             |
-| ZB                     | 1   | ZbClient                  | &#10003; | &#10003; | -        | &#10003;       | -             | -              | -             |
+| Exchange               | API | Class                     | Ticker   | Trades   | Candles  | OB-L2 Snapshot | OB-L2 Updates | OB-L3 Snapshot | OB-L3 Updates | AUTH    |
+| ---------------------- | --- | ------------------------- | -------- | -------- | -------- | -------------- | ------------- | -------------- | ------------- |---------|
+| Bibox                  | 1   | BiboxClient               | &#10003; | &#10003; | &#10003; | &#10003;       |               | -              | -             |         |
+| Binance                | 1   | BinanceClient             | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |         |
+| Binance Futures Coin-M | 1   | BinanceFuturesCoinmClient | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |         |
+| Binance Futures USDT-M | 1   | BinanceFuturesUsdtmClient | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |         |
+| Binance US             | 1   | BinanceUsClient           | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*\*  | -              | -             |         |
+| Bitfinex               | 2   | BitfinexClient            | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | &#10003;\*    |         |
+| bitFlyer               | 1   | BitflyerClient            | &#10003; | &#10003; | -        | -              | &#10003;\*\*  | -              | -             |         |
+| Bithumb                | 1   | BithumbClient             | &#10003; | &#10003; | -        | -              | &#10003;\*\*  | -              | -             |         |
+| BitMEX                 | 1   | BitmexClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |         |
+| Bitstamp               | 2   | BitstampClient            | -        | &#10003; | -        | &#10003;       | &#10003;\*\*  | -              | -             |         |
+| Cex.io                 | 1   | CexClient                 | &#10003; | &#10003; | &#10003; | &#10003;       |               | -              | -             |&#10003; |
+| Coinbase Pro           | 1   | CoinbaseProClient         | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | &#10003;      |         |
+| Coinex                 | 1   | CoinexClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |&#10003; |
+| Deribit                | 2   | DeribitClient             | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |         |
+| Digifinex              | 1   | DigifinexClient           | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |         |
+| ErisX                  | 3.4 | ErisXClient               | -        | &#10003; | -        | -              | -             | -              | &#10003;\*    |         |
+| Gate.io                | 3   | GateioClient              | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |&#10003; |
+| Gemini                 | 1   | GeminiClient              | -        | &#10003; | -        | -              | &#10003;\*    | -              | -             |         |
+| HitBTC                 | 2   | HitBtcClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |         |
+| Huobi Global           | 1   | HuobiClient               | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |         |
+| Huobi Global Futures   | 1   | HuobiFuturesClient        | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |         |
+| Huobi Global Swaps     | 1   | HuobiSwapsClient          | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |         |
+| Huobi Japan            | 1   | HuobiJapanClient          | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |         |
+| Huobi Korea            | 1   | HuobiKoreaClient          | &#10003; | &#10003; | &#10003; | &#10003;       | -             | -              | -             |         |
+| KuCoin                 | 2   | KucoinClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*\*  | -              | &#10003;\*    |         |
+| Kraken                 | 0   | KrakenClient              | &#10003; | &#10003; | &#10003; | -              | &#10003;\*    | -              | -             |         |
+| LedgerX                | 1   | LedgerXClient             | -        | &#10003; | -        | -              | -             | -              | &#10003;\*    |         |
+| Liquid                 | 2   | LiquidClient              | &#10003; | &#10003; | -        | -              | &#10003;      | -              | -             |         |
+| OKEx                   | 3   | OkexClient                | &#10003; | &#10003; | &#10003; | &#10003;       | &#10003;\*    | -              | -             |         |
+| Poloniex               | 2   | PoloniexClient            | &#10003; | &#10003; | -        | -              | &#10003;\*    | -              | -             |         |
+| Upbit                  | 1   | UpbitClient               | &#10003; | &#10003; | -        | &#10003;       | -             | -              | -             |         |
+| ZB                     | 1   | ZbClient                  | &#10003; | &#10003; | -        | &#10003;       | -             | -              | -             |         |
 
 Notes:
 
