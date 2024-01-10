@@ -293,7 +293,13 @@ export class KucoinClient extends BasicClient {
     protected _sendUnsubLevel3Snapshots = NotImplementedFn;
 
     protected _onMessage(raw: string) {
-        const replaced = raw.replace(/:(\d+\.{0,1}\d+)(,|\})/g, ':"$1"$2');
+        if (typeof raw !== 'string') {
+            this._onError(new Error('Received message is not a string.'));
+            return;
+        }
+
+        const replaced = raw.replace(/:(\d+\.?\d+)(,|})/g, ':"$1"$2');
+
         try {
             const msgs = JSON.parse(replaced);
 
