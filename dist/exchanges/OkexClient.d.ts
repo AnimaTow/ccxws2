@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { BasicClient } from "../BasicClient";
 import { Candle } from "../Candle";
 import { CandlePeriod } from "../CandlePeriod";
@@ -70,7 +71,7 @@ export declare class OkexClient extends BasicClient {
     protected _sendUnsubLevel3Snapshots: (...args: any[]) => any;
     protected _sendSubLevel3Updates: (...args: any[]) => any;
     protected _sendUnsubLevel3Updates: (...args: any[]) => any;
-    protected _onMessage(json: string): void;
+    protected _onMessage(compressed: Buffer): void;
     protected _processMessage(msg: any): void;
     /**
      * Process ticker messages in the format

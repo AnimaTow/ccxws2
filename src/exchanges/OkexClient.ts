@@ -17,6 +17,9 @@ import { Market } from "../Market";
 import { NotImplementedFn } from "../NotImplementedFn";
 import { Ticker } from "../Ticker";
 import { Trade } from "../Trade";
+import * as zlib from "../ZlibUtils";
+
+const pongBuffer = Buffer.from("pong");
 
 export type OkexClientOptions = ClientOptions & {
     sendThrottleMs?: number;
@@ -228,19 +231,26 @@ export class OkexClient extends BasicClient {
     protected _sendSubLevel3Updates = NotImplementedFn;
     protected _sendUnsubLevel3Updates = NotImplementedFn;
 
-    protected _onMessage(json: string) {
-        // ignore pongs
-        if (json === "pong") {
-            return;
-        }
+    protected _onMessage(compressed: Buffer) {
+        zlib.inflateRaw(compressed, (err, raw) => {
+            if (err) {
+                this.emit("error", err);
+                return;
+            }
 
-        // process JSON message
-        try {
-            const msg = JSON.parse(json.toString());
-            this._processMessage(msg);
-        } catch (ex) {
-            this.emit("error", ex);
-        }
+            // ignore pongs
+            if (raw.equals(pongBuffer)) {
+                return;
+            }
+
+            // process JSON message
+            try {
+                const msg = JSON.parse(raw.toString());
+                this._processMessage(msg);
+            } catch (ex) {
+                this.emit("error", ex);
+            }
+        });
     }
 
     protected _processMessage(msg: any) {
