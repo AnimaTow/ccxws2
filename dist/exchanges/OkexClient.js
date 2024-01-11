@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -43,7 +20,6 @@ const Level2Update_1 = require("../Level2Update");
 const NotImplementedFn_1 = require("../NotImplementedFn");
 const Ticker_1 = require("../Ticker");
 const Trade_1 = require("../Trade");
-const zlib = __importStar(require("../ZlibUtils"));
 const pongBuffer = Buffer.from("pong");
 /**
  * Implements OKEx V5 WebSocket API as defined in
@@ -202,25 +178,19 @@ class OkexClient extends BasicClient_1.BasicClient {
             args: [this._marketArg("books-l2-tbt", market)],
         }));
     }
-    _onMessage(compressed) {
-        zlib.inflateRaw(compressed, (err, raw) => {
-            if (err) {
-                this.emit("error", err);
-                return;
-            }
-            // ignore pongs
-            if (raw.equals(pongBuffer)) {
-                return;
-            }
-            // process JSON message
-            try {
-                const msg = JSON.parse(raw.toString());
-                this._processMessage(msg);
-            }
-            catch (ex) {
-                this.emit("error", ex);
-            }
-        });
+    _onMessage(json) {
+        // ignore pongs
+        if (json === "pong") {
+            return;
+        }
+        // process JSON message
+        try {
+            const msg = JSON.parse(json.toString());
+            this._processMessage(msg);
+        }
+        catch (ex) {
+            this.emit("error", ex);
+        }
     }
     _processMessage(msg) {
         // clear semaphore on subscription event reply

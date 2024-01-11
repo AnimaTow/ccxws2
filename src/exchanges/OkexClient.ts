@@ -231,26 +231,19 @@ export class OkexClient extends BasicClient {
     protected _sendSubLevel3Updates = NotImplementedFn;
     protected _sendUnsubLevel3Updates = NotImplementedFn;
 
-    protected _onMessage(compressed: Buffer) {
-        zlib.inflateRaw(compressed, (err, raw) => {
-            if (err) {
-                this.emit("error", err);
-                return;
-            }
+    protected _onMessage(json: string) {
+        // ignore pongs
+        if(json==="pong"){
+            return;
+        }
 
-            // ignore pongs
-            if (raw.equals(pongBuffer)) {
-                return;
-            }
-
-            // process JSON message
-            try {
-                const msg = JSON.parse(raw.toString());
-                this._processMessage(msg);
-            } catch (ex) {
-                this.emit("error", ex);
-            }
-        });
+        // process JSON message
+        try {
+            const msg = JSON.parse(json.toString());
+            this._processMessage(msg);
+        } catch (ex) {
+            this.emit("error", ex);
+        }
     }
 
     protected _processMessage(msg: any) {
